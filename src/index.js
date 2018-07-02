@@ -4,7 +4,7 @@ const fsExtra = require(`fs-extra`)
 const path = require(`path`)
 const _ = require(`lodash`)
 
-module.exports = ({ files, linkPrefix, markdownNode, markdownAST, getNode }) => {
+module.exports = ({ files, pathPrefix, markdownNode, markdownAST, getNode }) => {
   // Copy linked files to the public directory and modify the AST to point to
   // new location of the files.
   const visitor = link => {
@@ -22,7 +22,7 @@ module.exports = ({ files, linkPrefix, markdownNode, markdownAST, getNode }) => 
           `public`,
           `${linkNode.relativePath}`
         )
-        link.url = path.join(linkPrefix || "/", linkNode.relativePath)
+        link.url = path.join(pathPrefix || "/", linkNode.relativePath)
         if (!fsExtra.existsSync(newPath)) {
           fsExtra.copy(linkPath, newPath, err => {
             if (err) {
@@ -36,3 +36,4 @@ module.exports = ({ files, linkPrefix, markdownNode, markdownAST, getNode }) => 
 
   visit(markdownAST, `image`, image => visitor(image))
 }
+
